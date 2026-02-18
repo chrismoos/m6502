@@ -1,0 +1,47 @@
+# Makefile for MCU + BRAM Klaus functional test using Verilator
+# Usage: make -f Makefile.mcu_klaus run
+# Usage with waves: WAVES=1 make -f Makefile.mcu_klaus run
+
+VERILATOR = verilator
+TOP = test_mcu_klaus
+BUILD_DIR = obj_dir_mcu_klaus
+RTL_DIR = ../rtl
+TEST_DIR = .
+BIN_DIR = .
+
+# All RTL sources - .vh files FIRST so they're processed before .sv files
+VERILOG_SOURCES = \
+	$(shell find $(RTL_DIR) -name '*.vh') \
+	$(TEST_DIR)/test_mcu_klaus.sv \
+	$(wildcard $(RTL_DIR)/*.sv)
+
+# Verilator flags
+VFLAGS = --cc --exe --build \
+	-Wno-fatal \
+	--timing \
+	-I$(RTL_DIR) \
+	--Mdir $(BUILD_DIR) \
+	--top-module $(TOP) \
+	-CFLAGS "-O3" \
+	--public-flat-rw
+
+ifeq ($(WAVES),1)
+VFLAGS += --trace
+endif
+
+.PHONY: all build run clean
+
+all: run
+
+build: $(BUILD_DIR)/V$(TOP)
+
+$(BUILD_DIR)/V$(TOP): $(VERILOG_SOURCES) tb_mcu_klaus.cpp
+	$(VERILATOR) $(VFLAGS) $(VERILOG_SOURCES) tb_mcu_klaus.cpp
+
+run: build
+	@echo "Running Klaus 6502 functional test (MCU with BRAM)..."
+	@cp $(BIN_DIR)/6502_functional_test.hex $(BUILD_DIR)/
+	cd $(BUILD_DIR) && ./V$(TOP)
+
+clean:
+	rm -rf $(BUILD_DIR)

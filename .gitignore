@@ -1,0 +1,26 @@
+bin
+sim_build
+.vscode
+*.swp
+__pycache__
+test/obj_dir*
+.DS_Store
+*.o
+build
+
+# Simulation files
+*.vcd
+
+# Python
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Test results
+results.xml
+
+# Binary files
+*.bin
+*.hex
+*.elf

@@ -1,0 +1,9 @@
+[project]
+name = "m6502"
+version = "0.1.0"
+description = "Compact, synthesizable MOS 6502 CPU implementation"
+requires-python = ">=3.10"
+dependencies = [
+    "cocotb>=1.8.0",
+    "pytest>=7.0.0",
+]

@@ -1,0 +1,88 @@
+.pio_version 0 // only requires PIO version 0
+.program flash
+;.side_set 2 opt pindirs
+
+; Timing constants for 1MHz CPU (tested)
+; Higher speeds may be possible depending on RP2040 clock speed (testing TBD)
+.define RW_ADDR_SETUP_TIME_1 6
+.define MUX_SETUP_TIME 16
+
+; IN pins 1-8 are data, 11 - R/W
+; OUT pins 1-8 are data, 9-10 mux
+; SET pins 1-2 mux
+
+; switch data pins to input, mux to output
+;set pindirs, 0b11
+
+; get high address of RAM
+pull block
+mov y, osr
+wait 1 pin 26
+
+loop:
+
+    ; at falling edge we still keep the mux where it needs to be so it can be sampled 
+    wait 0 pin 26 [RW_ADDR_SETUP_TIME_1]
+
+    ; switch data pins back to input
+    mov osr, null
+    out pindirs, 8
+    ;set pindirs, 0b11
+
+    ; update the mux for high bits
+    set pins, 0b01 [MUX_SETUP_TIME]
+
+    ; set high address
+    mov isr, y [MUX_SETUP_TIME]
+
+    ; read hi bits
+    in pins, 8
+
+    ; update the mux for low bits
+    set pins, 0b00 [MUX_SETUP_TIME]
+
+    ; read lo bits
+    in pins, 8
+
+    push block
+
+    ; wait for phi2 rising edge
+    wait 1 pin 26
+    jmp pin bus_read
+
+bus_write:
+    ; switch to input, needed??
+    mov osr, null
+    out pindirs, 8
+    set pindirs, 0b11
+
+    ; update the mux for reading data on bus (from CPU)
+    set pins, 0b11 [MUX_SETUP_TIME]
+
+    ; read current data, but discard
+    pull block
+
+    ; store to RAM
+    in pins, 8
+    push block
+
+    jmp loop
+
+bus_read:
+    ; change data pins to output
+    mov osr, !null
+    out pindirs, 8
+    set pindirs, 0b11
+
+    ; update the mux for placing data on bus
+    set pins, 0b10 [MUX_SETUP_TIME]
+
+    pull block
+    mov x, osr
+    out pins, 8
+
+    ; we need to write to keep the DMA chain going -- write back existing data
+    mov isr, x
+    push block
+
+    jmp loop
