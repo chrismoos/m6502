@@ -1,5 +1,4 @@
 module gpio (
-    input i_clk,
     input i_phi2,
     input i_reset_n,
     input [3:0] i_addr,

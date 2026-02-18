@@ -7,8 +7,7 @@ module bus_multiplexer (
 
     // mux
     output reg [7:0] o_mux_data,
-    output reg o_mux_data_oe,
-    input [7:0] i_mux_data
+    output reg o_mux_data_oe
 );
 
 localparam MUX_ADDRESS_LO = 0;

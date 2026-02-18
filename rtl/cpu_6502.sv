@@ -88,7 +88,6 @@ always_comb begin
 end
 
 cpu_6502_ir_decoder cpu_6502_ir_decoder (
-    .i_clk(i_clk),
     .i_opcode(current_instruction),
     .o_operand_type(addressing_mode)
 );
@@ -101,8 +100,6 @@ cpu_6502_microcode microcode_next (
     .i_current_microinstruction(current_microinstruction),
     .i_handle_irq(handle_irq),
     .i_init(init),
-    .i_irq_n(i_irq_n),
-    .i_nmi_n(i_nmi_n),
     .o_next_microinstruction(next_microinstruction)
 );
 
@@ -111,8 +108,6 @@ cpu_6502_microcode microcode_next2 (
     .i_current_microinstruction(next_microinstruction),
     .i_handle_irq(handle_irq),
     .i_init(init),
-    .i_irq_n(i_irq_n),
-    .i_nmi_n(i_nmi_n),
     .o_next_microinstruction(next2_microinstruction)
 );
 
@@ -917,7 +912,6 @@ always_comb begin
 end
 
 cpu_6502_alu alu (
-    .i_clk(i_clk),
     .i_operation(alu_operation),
     .i_lhs(alu_lhs),
     .i_rhs(alu_rhs),

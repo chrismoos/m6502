@@ -1,7 +1,6 @@
 `include "cpu_6502_instructions.vh"
 
 module cpu_6502_alu (
-    input i_clk,
     input alu_op_t i_operation,
     input i_carry,
     input [7:0] i_lhs,
@@ -18,7 +17,6 @@ wire b7, b0;
 assign b7 = i_lhs[7];
 assign b0 = i_lhs[0];
 
-reg [7:0] result1;
 
 reg [4:0] result_hi, result_lo;
 reg bcd_carry_lo, bcd_carry_hi;

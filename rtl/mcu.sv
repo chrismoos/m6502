@@ -36,10 +36,10 @@ wire cpu_phi1;
 wire cpu_phi2;
 wire cpu_rw;
 wire [15:0] bus_addr;
-wire [7:0] gpioa_read_data, ext_read_data, led_read_data, clkctrl_read_data, timer_read_data, uart_read_data;
+wire [7:0] gpioa_read_data, led_read_data, clkctrl_read_data, timer_read_data, uart_read_data;
 wire [7:0] bus_write_data;
 reg [7:0] bus_read_data;
-reg gpioa_en, ext_en, led_en, clkctrl_en, timer_en, uart_en;
+reg gpioa_en, led_en, clkctrl_en, timer_en, uart_en;
 
 wire cpu_clk;
 
@@ -83,7 +83,6 @@ cpu_6502 #(
 );
 
 gpio gpioa (
-    .i_clk(i_clk),
     .i_phi2(cpu_phi2),
     .i_reset_n(i_reset_n),
     .i_addr(bus_addr[3:0]),
@@ -169,7 +168,6 @@ uart #(
 
 always_comb begin
     gpioa_en = 0;
-    ext_en = 0;
     led_en = 0;
     timer_en = 0;
     clkctrl_en = 0;
@@ -192,7 +190,6 @@ always_comb begin
         uart_en = 1;
         bus_read_data = uart_read_data;
     end else begin
-        ext_en = 1;
         bus_read_data = i_bus_data;
     end
 end

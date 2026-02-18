@@ -4,8 +4,6 @@
 // to make it more horizontal, but for space savings this is chosen for now.
 module cpu_6502_microcode (
     input [7:0] i_current_instruction,
-    input i_irq_n,
-    input i_nmi_n,
     input i_init,
     input i_handle_irq,
     input microinstruction_t i_current_microinstruction,

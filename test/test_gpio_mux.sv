@@ -23,7 +23,6 @@ wire [7:0] o_data;
 
 // Instantiate GPIO module
 gpio gpio_inst (
-    .i_clk(i_clk),
     .i_phi2(i_phi2),
     .i_reset_n(i_reset_n),
     .i_addr(i_addr),

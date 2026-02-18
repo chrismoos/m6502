@@ -207,8 +207,7 @@ bus_multiplexer external_bus (
     .i_cpu_data(bus_cpu_data),
     .i_cpu_addr(bus_addr),
     .o_mux_data(bus_mux_data_out),
-    .o_mux_data_oe(bus_mux_data_oe),
-    .i_mux_data(bus_mux_data_in)
+    .o_mux_data_oe(bus_mux_data_oe)
 );
 
 
