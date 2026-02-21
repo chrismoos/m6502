@@ -1,3 +1,5 @@
+`include "cpu_6502_instructions.vh"
+
 module cpu_6502 #(
     START_PC_ENABLED = 0,
     START_PC = 0
@@ -34,8 +36,6 @@ localparam NMI_VECTOR = 16'hfffa;
 localparam IRQ_VECTOR = 16'hfffe;
 
 localparam INIT_CYCLES = 6;
-
-`include "cpu_6502_instructions.vh"
 
 typedef enum logic [3:0] {
     INIT = 0,

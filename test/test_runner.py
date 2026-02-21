@@ -11,8 +11,7 @@ def test_runner(test):
     waves = os.getenv("WAVES", "0") == "1"
 
     proj_path = Path(__file__).resolve().parent
-    # Add .vh files FIRST so they're processed before .sv files
-    sources = list(proj_path.glob('../rtl/**/*.vh'))
+    sources = []
     sources.append(proj_path / f"{test}.sv")
     sources.extend(proj_path.glob('../rtl/**/*.sv'))
 
