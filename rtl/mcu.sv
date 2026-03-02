@@ -3,7 +3,8 @@ module mcu #(
     parameter START_PC_ENABLED = 0,
     parameter LED_DEFAULT_CLOCK_DIV = 2,
     parameter CPU_CLOCK_DIV_DEFAULT = 8'h00,
-    parameter UART_FIFO_DEPTH = 8
+    parameter UART_FIFO_DEPTH = 8,
+    parameter ENABLE_SK6812 = 1
 ) (
     input i_clk,
     input i_reset_n,
@@ -98,19 +99,26 @@ gpio gpioa (
     .i_sk6812_data(sk6812_data)
 );
 
-sk6812rgbw_peripheral #(
-    .CLOCK_DIV_DEFAULT(LED_DEFAULT_CLOCK_DIV)
-) sk6812 (
-    .i_clk(i_clk),
-    .i_phi2(cpu_phi2),
-    .i_reset_n(i_reset_n),
-    .i_addr(bus_addr[2:0]),
-    .i_data(bus_write_data),
-    .i_rw(cpu_rw),
-    .o_data(led_read_data),
-    .i_en(led_en),
-    .o_led_data(sk6812_data)
-);
+generate
+    if (ENABLE_SK6812) begin : sk6812_gen_on
+        sk6812rgbw_peripheral #(
+            .CLOCK_DIV_DEFAULT(LED_DEFAULT_CLOCK_DIV)
+        ) sk6812 (
+            .i_clk(i_clk),
+            .i_phi2(cpu_phi2),
+            .i_reset_n(i_reset_n),
+            .i_addr(bus_addr[2:0]),
+            .i_data(bus_write_data),
+            .i_rw(cpu_rw),
+            .o_data(led_read_data),
+            .i_en(led_en),
+            .o_led_data(sk6812_data)
+        );
+    end else begin : sk6812_gen_off
+        assign led_read_data = 8'h00;
+        assign sk6812_data = 1'b0;
+    end
+endgenerate
 
 clock_control #(
     .CPU_DIV_DEFAULT(CPU_CLOCK_DIV_DEFAULT)

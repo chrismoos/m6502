@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from cocotb_tools.runner import get_runner
 
-TESTS = ['test_mcu', 'test_cpu_6502', 'test_cpu_6502_reset', 'test_bram', 'test_clock_control', 'test_timer', 'test_gpio_mux', 'test_uart']
+TESTS = ['test_mcu', 'test_mcu_no_led', 'test_cpu_6502', 'test_cpu_6502_reset', 'test_bram', 'test_clock_control', 'test_timer', 'test_gpio_mux', 'test_uart']
 
 @pytest.mark.parametrize("test", TESTS)
 def test_runner(test):
@@ -16,7 +16,7 @@ def test_runner(test):
     sources.extend(proj_path.glob('../rtl/**/*.sv'))
 
     # Add bus_ram for cpu tests
-    if test in ["test_cpu_6502", "test_cpu_6502_reset"]:
+    if test in ["test_cpu_6502", "test_cpu_6502_reset", "test_mcu", "test_mcu_no_led"]:
         sources.append(proj_path / "bus_ram.sv")
 
     runner = get_runner(sim)

@@ -189,7 +189,7 @@ async def test_led_write_colors(dut):
     await ClockCycles(dut.phi2, CPU_INIT_CYCLES + 30)
 
     # led_color format: [31:24]=GREEN, [23:16]=RED, [15:8]=BLUE, [7:0]=WHITE
-    led_color = int(dut.mcu.sk6812.led_color.value)
+    led_color = int(dut.mcu.sk6812_gen_on.sk6812.led_color.value)
     red = (led_color >> 16) & 0xFF
     green = (led_color >> 24) & 0xFF
     blue = (led_color >> 8) & 0xFF
@@ -230,14 +230,14 @@ async def test_led_strobe(dut):
     await release_reset(dut)
 
     # Wait for SK6812 to exit reset, then CPU executes strobe
-    await FallingEdge(dut.mcu.sk6812.sk6812rgbw.o_busy)
+    await FallingEdge(dut.mcu.sk6812_gen_on.sk6812.sk6812rgbw.o_busy)
 
     # Wait for transmission to complete (busy goes high then low again)
-    await RisingEdge(dut.mcu.sk6812.sk6812rgbw.o_busy)
-    await FallingEdge(dut.mcu.sk6812.sk6812rgbw.o_busy)
+    await RisingEdge(dut.mcu.sk6812_gen_on.sk6812.sk6812rgbw.o_busy)
+    await FallingEdge(dut.mcu.sk6812_gen_on.sk6812.sk6812rgbw.o_busy)
 
     # Verify color was latched
-    color = int(dut.mcu.sk6812.sk6812rgbw.color.value)
+    color = int(dut.mcu.sk6812_gen_on.sk6812.sk6812rgbw.color.value)
     assert (color >> 16) & 0xFF == 0xAA, f"Color RED should be 0xAA, got {hex(color)}"
 
 
@@ -269,7 +269,7 @@ async def test_led_status_busy(dut):
     await release_reset(dut)
 
     # Wait for SK6812 to exit reset
-    await FallingEdge(dut.mcu.sk6812.sk6812rgbw.o_busy)
+    await FallingEdge(dut.mcu.sk6812_gen_on.sk6812.sk6812rgbw.o_busy)
 
     # Run CPU to complete all operations
     await ClockCycles(dut.phi2, 50)
